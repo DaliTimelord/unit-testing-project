@@ -69,7 +69,7 @@ public class BackupTest {
         String result = test.serializeShoppingCart(cart);
 
         // save expected String
-        String expectedResult = "Butter,4,A dairy product with high butterfat content which is solid when chilled and at room temperature in some regions, and liquid when warmed.,1\r\nSoda,2,A drink that typically contains carbonated water, a sweetener, and a natural or artificial flavoring.,1\r\nLettuce,5,A leafy herbaceous annual or biennial plant in the family Asteraceae grown for its leaves which are used as a salad green.,1\r\n";
+        String expectedResult = "Butter,4,A dairy product with high butterfat content which is solid when chilled and at room temperature in some regions, and liquid when warmed.,1" + Backup.LINE_SEPARATOR + "Soda,2,A drink that typically contains carbonated water, a sweetener, and a natural or artificial flavoring.,1" + Backup.LINE_SEPARATOR + "Lettuce,5,A leafy herbaceous annual or biennial plant in the family Asteraceae grown for its leaves which are used as a salad green.,1" + Backup.LINE_SEPARATOR;
 
         // compare cart String and expected String
         assertEquals(result, expectedResult);
