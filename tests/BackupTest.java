@@ -1,24 +1,24 @@
 import csc4700.Backup;
 import csc4700.Item;
 import csc4700.ShoppingCart;
+import csc4700.exceptions.SerializedFormatException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+
 import static org.junit.Assert.*;
 
 public class BackupTest {
 
     private String filename;
     private Backup test;
+    private File tempFile;
 
     @Before
     public void createTempFile() throws IOException {
-        File tempFile = File.createTempFile("BackupDemoTests","");
+        tempFile = File.createTempFile("BackupDemoTests","");
         this.filename = tempFile.getAbsolutePath();
 
         BufferedWriter bw = new BufferedWriter(new FileWriter(this.filename));
@@ -73,6 +73,60 @@ public class BackupTest {
 
         // compare cart String and expected String
         assertEquals(result, expectedResult);
+    }
+
+    @Test
+    public void nullStringTest() {
+
+        test = new Backup();
+
+        try {
+            test.deserializeShoppingCart(null);
+        } catch (NullPointerException | SerializedFormatException e) {
+            // Expected
+        }
+    }
+
+    @Test
+    public void badFileNameTest() throws IOException {
+
+        // set up test file
+        BufferedWriter bw = new BufferedWriter(new FileWriter(this.filename));
+        bw.write("Test Data");
+
+        // create cart
+        ShoppingCart cart = new ShoppingCart();
+
+        // create butter item
+        Item butter = new Item();
+        butter.setName("Butter");
+        butter.setDescription("A dairy product with high butterfat content which is solid when chilled and at room temperature in some regions, and liquid when warmed.");
+        butter.setCost(4);
+        cart.addItem(butter);
+
+        // test backup
+        test = new Backup();
+        test.saveShoppingCart(cart, tempFile);
+
+        // compare file with original text
+        BufferedReader br = new BufferedReader(new FileReader(tempFile));
+
+        assertNotEquals(br.readLine(), "Test Data");
+        br.close();
+        bw.close();
+
+    }
+
+    @Test
+    public void shoppingCartNotFound() {
+
+        test = new Backup();
+
+        try {
+            test.loadShoppingCart(new File("somefile.txt"));
+        } catch (IOException | SerializedFormatException e) {
+            // Expected
+        }
     }
 
     @After
