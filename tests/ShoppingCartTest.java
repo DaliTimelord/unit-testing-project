@@ -1,3 +1,5 @@
+package csc4700;
+
 import java.util.ArrayList;
 import java.util.List;
 
