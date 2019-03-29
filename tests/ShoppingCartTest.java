@@ -76,8 +76,10 @@ public class ShoppingCartTest {
         lettuce.setCost(5);
         cart.addItem(lettuce);
 
-        // check size of list versus array
-        assertEquals(cart.findCartItem(lettuce), lettuce);
+
+        CartItem carti = new CartItem(lettuce);
+        assertTrue(carti.equals(cart.findCartItem(lettuce)));
+
     }
 
 
@@ -94,7 +96,9 @@ public class ShoppingCartTest {
         cart.addItem(lettuce);
 
         cart.deleteItem(lettuce);
-        assertEquals(cart.findCartItem(lettuce), lettuce);
+
+        CartItem carti = new CartItem(lettuce);
+        assertTrue(carti.equals(cart.findCartItem(lettuce)));
     }
 
     @Test
