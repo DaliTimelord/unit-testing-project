@@ -129,6 +129,7 @@ public class CartItemTest {
         assertFalse(itemOne.equals(itemTwo));
 	}
 
+	@Test
     public void unequalHashTestForCartItem() {
         Item berry = new Item();
         berry.setName("Berries");

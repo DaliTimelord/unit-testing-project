@@ -1,12 +1,15 @@
 import csc4700.Backup;
 import csc4700.Item;
 import csc4700.ShoppingCart;
+import csc4700.CartItem;
 import csc4700.exceptions.SerializedFormatException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
+import java.text.DateFormat;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -127,6 +130,74 @@ public class BackupTest {
         } catch (IOException | SerializedFormatException e) {
             // Expected
         }
+    }
+
+    @Test
+    public void deserializeTest() {
+
+        // serialized string
+        String cartString = "Butter" + Backup.FIELD_SEPARATOR + "4" + Backup.FIELD_SEPARATOR +
+                "A dairy product with high butterfat content which is solid" + Backup.FIELD_SEPARATOR + "1" + Backup.LINE_SEPARATOR
+                + "Soda" + Backup.FIELD_SEPARATOR + "2" + Backup.FIELD_SEPARATOR + "A drink that typically contains carbonated water " +
+                "and a natural or artificial flavoring" + Backup.FIELD_SEPARATOR + "2" + Backup.LINE_SEPARATOR;
+
+        // run method
+        test = new Backup();
+        ShoppingCart cart = null;
+
+        try {
+            cart = test.deserializeShoppingCart(cartString);
+        } catch (SerializedFormatException e) {
+            // not supposed to happen
+        }
+
+        // create shopping cart to test deserialized method input
+        ShoppingCart demo = new ShoppingCart();
+
+        // create butter item
+        Item butter = new Item();
+        butter.setName("Butter");
+        butter.setDescription("A dairy product with high butterfat content which is solid");
+        butter.setCost(4);
+        demo.addItem(butter);
+
+        // create soda item
+        Item soda = new Item();
+        soda.setName("Soda");
+        soda.setDescription("A drink that typically contains carbonated water and a natural or artificial flavoring");
+        soda.setCost(2);
+        demo.addItem(soda);
+        demo.findCartItem(soda).setCount(2);
+
+        // go through carts to match items
+        List<CartItem> demoList = demo.getCartItems();
+        List<CartItem> cartList = cart.getCartItems();
+
+        if (demoList.size() != cartList.size()) {
+            fail("The carts are of different sizes");
+        }
+
+
+        for (int i = 0; i < demoList.size() && i < cartList.size(); i++) {
+
+            if (demoList.get(i).hashCode() != cartList.get(i).hashCode()) {
+                fail("Repeated items");
+            }
+
+            if (demoList.get(i).getCount() != cartList.get(i).getCount()) {
+                fail("Not the same item quantity");
+            }
+
+            if (!demoList.get(i).getItem().getDescription().equals(cartList.get(i).getItem().getDescription())) {
+                fail("Not the same description");
+            }
+
+            if (demoList.get(i).getItem().getCost() != demoList.get(i).getItem().getCost()) {
+                fail("Not the same cost");
+            }
+
+        }
+
     }
 
     @After
