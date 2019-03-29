@@ -1,124 +1,17 @@
-package csc4700;
-
-import csc4700.exceptions.SerializedFormatException;
+import csc4700.Backup;
+import csc4700.Item;
+import csc4700.ShoppingCart;
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.*;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-
-import static junit.framework.TestCase.assertEquals;
+import static org.junit.Assert.*;
 
 public class BackupTest {
-
-    private Backup backupUnderTest;
-
-    @BeforeEach
-    public void setUp() {
-        backupUnderTest = new Backup();
-    }
-
-    @Test
-    public void testSerializeShoppingCart() {
-        // Setup
-        final ShoppingCart cart = null;
-        final String expectedResult = "Test result 01";
-
-        // Running the actual test
-        final String result = backupUnderTest.serializeShoppingCart(cart);
-
-        // The assertion
-        assertEquals(expectedResult, result);
-    }
-
-    @Test
-    public void testDeserializeShoppingCart() throws Exception {
-        // Setup
-        final String s = "String test data";
-        final ShoppingCart expectedResult = null;
-
-        // The testing
-        final ShoppingCart result = backupUnderTest.deserializeShoppingCart(s);
-
-        // The assertion
-        assertEquals(expectedResult, result);
-    }
-
-    @Test
-    public void testDeserializeShoppingCart_ThrowsSerializedFormatException() throws Exception {
-        // Setup
-        final String s = "s";
-        final ShoppingCart expectedResult = null;
-
-        // The testing
-        assertThrows(SerializedFormatException.class, () -> {
-            backupUnderTest.deserializeShoppingCart(s);
-        });
-    }
-
-    @Test
-    public void testSaveShoppingCart() throws Exception {
-        // Setup
-        final ShoppingCart saveMe = null;
-        final File location = null;
-
-        // Run the test
-        backupUnderTest.saveShoppingCart(saveMe, location);
-    }
-
-    @Test
-    public void testSaveShoppingCart_ThrowsIOException() throws Exception {
-        // Setup
-        final ShoppingCart saveMe = null;
-        final File location = null;
-
-        // The testing
-        assertThrows(IOException.class, () -> {
-            backupUnderTest.saveShoppingCart(saveMe, location);
-        });
-    }
-
-    @Test
-    public void testLoadShoppingCart() throws Exception {
-        // Setup
-        final File location = null;
-        final ShoppingCart expectedResult = null;
-
-        // The testing
-        final ShoppingCart result = backupUnderTest.loadShoppingCart(location);
-
-        // The assertion
-        assertEquals(expectedResult, result);
-    }
-
-    @Test
-    public void testLoadShoppingCart_ThrowsIOException() throws Exception {
-        // Setup
-        final File location = null;
-        final ShoppingCart expectedResult = null;
-
-        // The testing
-        assertThrows(IOException.class, () -> {
-            backupUnderTest.loadShoppingCart(location);
-        });
-    }
-
-    @Test
-    public void testLoadShoppingCart_ThrowsSerializedFormatException() throws Exception {
-        // Setup
-        final File location = null;
-        final ShoppingCart expectedResult = null;
-
-        // The testing
-        assertThrows(SerializedFormatException.class, () -> {
-            backupUnderTest.loadShoppingCart(location);
-        });
-    }
 
     private String filename;
     private Backup test;
@@ -143,7 +36,7 @@ public class BackupTest {
     public void emptyCartTest() {
         test = new Backup();
         ShoppingCart cart = new ShoppingCart();
-        Assert.assertEquals(test.serializeShoppingCart(cart), "");
+        assertEquals(test.serializeShoppingCart(cart), "");
     }
 
     @Test
@@ -179,7 +72,7 @@ public class BackupTest {
         String expectedResult = "Butter,4,A dairy product with high butterfat content which is solid when chilled and at room temperature in some regions, and liquid when warmed.,1" + Backup.LINE_SEPARATOR + "Soda,2,A drink that typically contains carbonated water, a sweetener, and a natural or artificial flavoring.,1" + Backup.LINE_SEPARATOR + "Lettuce,5,A leafy herbaceous annual or biennial plant in the family Asteraceae grown for its leaves which are used as a salad green.,1" + Backup.LINE_SEPARATOR;
 
         // compare cart String and expected String
-        Assert.assertEquals(result, expectedResult);
+        assertEquals(result, expectedResult);
     }
 
     @After
@@ -187,4 +80,5 @@ public class BackupTest {
         File f = new File(this.filename);
         f.delete();
     }
+
 }
