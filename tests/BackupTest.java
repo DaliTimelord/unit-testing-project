@@ -8,7 +8,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.*;
-import java.text.DateFormat;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -171,6 +170,97 @@ public class BackupTest {
 
         // go through carts to match items
         List<CartItem> demoList = demo.getCartItems();
+        List<CartItem> cartList = cart.getCartItems();
+
+        if (demoList.size() != cartList.size()) {
+            fail("The carts are of different sizes");
+        }
+
+
+        for (int i = 0; i < demoList.size() && i < cartList.size(); i++) {
+
+            if (demoList.get(i).hashCode() != cartList.get(i).hashCode()) {
+                fail("Repeated items");
+            }
+
+            if (demoList.get(i).getCount() != cartList.get(i).getCount()) {
+                fail("Not the same item quantity");
+            }
+
+            if (!demoList.get(i).getItem().getDescription().equals(cartList.get(i).getItem().getDescription())) {
+                fail("Not the same description");
+            }
+
+            if (demoList.get(i).getItem().getCost() != demoList.get(i).getItem().getCost()) {
+                fail("Not the same cost");
+            }
+
+        }
+    }
+
+    @Test
+    public void deserializedException() {
+        // serialized string
+        String cartString = "Butter" + Backup.FIELD_SEPARATOR + "4" + Backup.LINE_SEPARATOR;
+
+        // run method
+        test = new Backup();
+        ShoppingCart cart = null;
+
+        try {
+            cart = test.deserializeShoppingCart(cartString);
+            fail("Error not raised");
+        } catch (SerializedFormatException e) {
+            // Expected
+        }
+    }
+
+    @Test
+    public void readFileTest() {
+        test = new Backup();
+        ShoppingCart cart = new ShoppingCart();
+
+        // create butter item
+        Item butter = new Item();
+        butter.setName("Butter");
+        butter.setDescription("A dairy product with high butterfat content which is solid");
+        butter.setCost(4);
+        cart.addItem(butter);
+
+        // create soda item
+        Item soda = new Item();
+        soda.setName("Soda");
+        soda.setDescription("A drink that typically contains carbonated water and a natural or artificial flavoring.");
+        soda.setCost(2);
+        cart.addItem(soda);
+
+        // create lettuce
+        Item lettuce = new Item();
+        lettuce.setName("Lettuce");
+        lettuce.setDescription("A leafy herbaceous annual or biennial plant in the family Asteraceae grown for its leaves which are used as a salad green.");
+        lettuce.setCost(5);
+        cart.addItem(lettuce);
+
+        // save the cart
+        test = new Backup();
+
+        try {
+            test.saveShoppingCart(cart, tempFile);
+        } catch (IOException e) {
+            fail("IOException");
+        }
+
+        // load the cart
+        ShoppingCart results = null;
+        try {
+            results = test.loadShoppingCart(tempFile);
+        } catch (IOException | SerializedFormatException e) {
+            fail("Exception found");
+        }
+
+        // compare the carts
+        // go through carts to match items
+        List<CartItem> demoList = results.getCartItems();
         List<CartItem> cartList = cart.getCartItems();
 
         if (demoList.size() != cartList.size()) {
